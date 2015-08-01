@@ -27,26 +27,26 @@ class ViewController: UIViewController {
             w: ScreenWidth-20)
         scroll.addSubview(c)
         
-        c.addHeader("Header")
-        c.addCell("Item 1") { sender in println("item 1 tapped") }
-        c.addCell("Item 2") { sender in println("item 2 tapped") }
-        c.addCell("Item 3") { sender in println("item 3 tapped") }
+        c.addHeaderWithTitle("Header")
+        c.addCellWithString("Item 1") { sender in print("item 1 tapped") }
+        c.addCellWithString("Item 2") { sender in print("item 2 tapped") }
+        c.addCellWithString("Item 3") { sender in print("item 3 tapped") }
         
         
         let cc = MaterialCardView (x: 10, y: c.bottomWithOffset(10), w: c.w)
         scroll.addSubview(cc)
         
-        cc.addHeader("Header")
-        cc.addCell("Item 1") { sender in println("item 1 tapped") }
-        cc.addCell("Item 2") { sender in println("item 2 tapped") }
-        cc.addCell("Item 3") { sender in println("item 3 tapped") }
+        cc.addHeaderWithTitle("Header")
+        cc.addCellWithString("Item 1") { sender in print("item 1 tapped") }
+        cc.addCellWithString("Item 2") { sender in print("item 2 tapped") }
+        cc.addCellWithString("Item 3") { sender in print("item 3 tapped") }
         
         
         let ccc = MaterialCardView (x: 10, y: cc.bottomWithOffset(10), w: c.w)
-        ccc.addCell("\n\nPlain Material Card\n\n")
+        ccc.addCellWithString("\n\nPlain Material Card\n\n")
         
         ccc.addRipple { () -> Void in
-            println("all card ripples")
+            print("all card ripples")
         }
         
         scroll.addSubview(ccc)
@@ -78,7 +78,7 @@ class ViewController: UIViewController {
         container.addSubview(label)
         container.h = label.h
     
-        c.addFooter(container)
+        c.addFooterWithView(container)
     }
 }
 

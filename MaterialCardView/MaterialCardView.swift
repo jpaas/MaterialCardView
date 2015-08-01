@@ -62,10 +62,10 @@ extension UIView {
             withOverlay: withOverlay,
             action: action)
 
-        addTapGesture(1, action: { [unowned self] (tap) -> () in
-            ripple.animate(tap.locationInView (self))
-            action? ()
-        })
+//        addTapGesture(1, action: { [unowned self] (tap) -> () in
+//            ripple.animate(tap.locationInView (self))
+//            action? ()
+//        })
     }
 }
 
@@ -118,11 +118,11 @@ class RippleLayer: CALayer {
     
     // MARK: Lifecylce 
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
-    override init!(layer: AnyObject!) {
+    override init(layer: AnyObject) {
         super.init(layer: layer)
     }
     
@@ -182,11 +182,11 @@ class RippleLayer: CALayer {
         if location == .TouchLocation {
             position = touchLocation
         } else {
-            position = superlayer.position
+            position = superlayer!.position
         }
         CATransaction.commit()
     
-        let animationGroup = rippleAnimation as CAAnimationGroup
+        let animationGroup = rippleAnimation as! CAAnimationGroup
         if let over = overlay {
             over.addAnimation(overlayAnimation, forKey: "overlayAnimation")
         }
@@ -305,7 +305,7 @@ class MaterialCardCell: UIView {
     
     // MARK: Lifecyle
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
@@ -393,16 +393,16 @@ class MaterialCardView: UIView {
     
     // MARK: Lifecylce
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+      defaultInit()
     }
-    
-    override init () {
-        super.init()
-        defaultInit()
+  
+    override init(frame: CGRect) {
+      super.init(frame: frame)
+      defaultInit()
     }
-    
-    
+
     init (x: CGFloat, y: CGFloat, w: CGFloat) {
         super.init(frame: CGRect (x: x, y: y, width: w, height: 0))
         defaultInit()
@@ -506,7 +506,7 @@ class MaterialCardView: UIView {
     
     // MARK: Add Cell
     
-    func addHeader (title: String) {
+    func addHeaderWithTitle(title: String) {
         let cell = MaterialCardCell (card: self)
         cell.backgroundColor = appeareance.headerBackgroundColor
         
@@ -516,8 +516,8 @@ class MaterialCardView: UIView {
         items.insert(cell, atIndex: 0)
         add(cell)
     }
-    
-    func addHeader (view: UIView) {
+  
+    func addHeaderWithView(view: UIView) {
         let cell = MaterialCardCell (card: self)
         cell.backgroundColor = appeareance.headerBackgroundColor
 
@@ -528,7 +528,7 @@ class MaterialCardView: UIView {
     }
     
     
-    func addFooter (title: String) {
+    func addFooterWithTitle (title: String) {
         let cell = MaterialCardCell (card: self)
         cell.backgroundColor = appeareance.headerBackgroundColor
         
@@ -539,7 +539,7 @@ class MaterialCardView: UIView {
         add(cell)
     }
     
-    func addFooter (view: UIView) {
+    func addFooterWithView (view: UIView) {
         let cell = MaterialCardCell (card: self)
         cell.backgroundColor = appeareance.headerBackgroundColor
         
@@ -550,7 +550,7 @@ class MaterialCardView: UIView {
     }
     
     
-    func addCell (text: String, action: (()->Void)? = nil) {
+    func addCellWithString (text: String, action: (()->Void)? = nil) {
         let cell = MaterialCardCell (card: self)
         cell.backgroundColor = appeareance.cellBackgroundColor
         
@@ -570,7 +570,7 @@ class MaterialCardView: UIView {
         add(cell)
     }
     
-    func addCell (view: UIView, action: (()->Void)? = nil) {
+    func addCellWithView (view: UIView, action: (()->Void)? = nil) {
         let cell = MaterialCardCell (card: self)
         cell.backgroundColor = appeareance.cellBackgroundColor
         
@@ -608,7 +608,7 @@ class MaterialCardView: UIView {
     
     // MARK: Remove Cell
     
-    func removeCell (index: Int) {
+    func removeCellAtIndex (index: Int) {
         if index < items.count {
             let cell = items[index]
             removeCell(cell)

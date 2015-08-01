@@ -206,7 +206,7 @@ extension UIView {
 extension UIView {
     
     func setAnchorPosition (anchorPosition: AnchorPosition) {
-        println(anchorPosition.rawValue)
+        print(anchorPosition.rawValue)
         self.layer.anchorPoint = anchorPosition.rawValue
     }
     
@@ -335,10 +335,11 @@ extension UIView {
     
     func pop () {
         setScale(1.1, y: 1.1)
-        spring(0.2) {
-            [unowned self] in
-            self.setScale(1, y: 1)
-        }
+      spring(0.2, animations: {() -> Void in
+        // Can't get this to work
+          //[unowned self] in self.setScale(1, y: 1)
+        self.setScale(1, y: 1)
+        })
     }
 }
 
@@ -371,16 +372,16 @@ extension UIView {
             userInteractionEnabled = true
     }
     
-    func addTapGesture (
-        tapNumber: Int,
-        action: ((UITapGestureRecognizer)->())?) {
-            let tap = BlockTap (tapCount: tapNumber,
-                fingerCount: 1,
-                action: action)
-            addGestureRecognizer(tap)
-            userInteractionEnabled = true
-    }
-    
+//    func addTapGesture (
+//        tapNumber: Int,
+//        action: ((UITapGestureRecognizer)->())?) {
+//            let tap = BlockTap (tapCount: tapNumber,
+//                fingerCount: 1,
+//                action: action)
+//            addGestureRecognizer(tap)
+//            userInteractionEnabled = true
+//    }
+  
     func addSwipeGesture (
         direction: UISwipeGestureRecognizerDirection,
         numberOfTouches: Int,
@@ -393,17 +394,17 @@ extension UIView {
             userInteractionEnabled = true
     }
     
-    func addSwipeGesture (
-        direction: UISwipeGestureRecognizerDirection,
-        numberOfTouches: Int,
-        action: ((UISwipeGestureRecognizer)->())?) {
-            let swipe = BlockSwipe (direction: direction,
-                fingerCount: numberOfTouches,
-                action: action)
-            addGestureRecognizer(swipe)
-            userInteractionEnabled = true
-    }
-    
+//    func addSwipeGesture (
+//        direction: UISwipeGestureRecognizerDirection,
+//        numberOfTouches: Int,
+//        action: ((UISwipeGestureRecognizer)->())?) {
+//            let swipe = BlockSwipe (direction: direction,
+//                fingerCount: numberOfTouches,
+//                action: action)
+//            addGestureRecognizer(swipe)
+//            userInteractionEnabled = true
+//    }
+  
     func addPanGesture (
         target: AnyObject,
         action: Selector) {
@@ -412,12 +413,12 @@ extension UIView {
             userInteractionEnabled = true
     }
     
-    func addPanGesture (action: ((UIPanGestureRecognizer)->())?) {
-        let pan = BlockPan (action: action)
-        addGestureRecognizer(pan)
-        userInteractionEnabled = true
-    }
-    
+//    func addPanGesture (action: ((UIPanGestureRecognizer)->())?) {
+//        let pan = BlockPan (action: action)
+//        addGestureRecognizer(pan)
+//        userInteractionEnabled = true
+//    }
+  
     func addPinchGesture (
         target: AnyObject,
         action: Selector) {
@@ -426,12 +427,12 @@ extension UIView {
             userInteractionEnabled = true
     }
     
-    func addPinchGesture (action: ((UIPinchGestureRecognizer)->())?) {
-        let pinch = BlockPinch (action: action)
-        addGestureRecognizer(pinch)
-        userInteractionEnabled = true
-    }
-    
+//    func addPinchGesture (action: ((UIPinchGestureRecognizer)->())?) {
+//        let pinch = BlockPinch (action: action)
+//        addGestureRecognizer(pinch)
+//        userInteractionEnabled = true
+//    }
+  
     func addLongPressGesture (
         target: AnyObject,
         action: Selector) {
@@ -440,11 +441,11 @@ extension UIView {
             userInteractionEnabled = true
     }
     
-    func addLongPressGesture (action: ((UILongPressGestureRecognizer)->())?) {
-        let longPress = BlockLongPress (action: action)
-        addGestureRecognizer(longPress)
-        userInteractionEnabled = true
-    }
+//    func addLongPressGesture (action: ((UILongPressGestureRecognizer)->())?) {
+//        let longPress = BlockLongPress (action: action)
+//        addGestureRecognizer(longPress)
+//        userInteractionEnabled = true
+//    }
 }
 
 
@@ -457,7 +458,7 @@ extension UIViewController {
         get {
             
             if let me = self as? UINavigationController {
-                return me.visibleViewController.top
+                return me.visibleViewController!.top
             }
             
             if let nav = self.navigationController {
@@ -476,7 +477,7 @@ extension UIViewController {
         get {
             
             if let me = self as? UINavigationController {
-                return me.visibleViewController.bottom
+                return me.visibleViewController!.bottom
             }
             
             if let tab = tabBarController {
@@ -496,7 +497,7 @@ extension UIViewController {
         get {
             
             if let me = self as? UINavigationController {
-                return me.visibleViewController.tabBarHeight
+                return me.visibleViewController!.tabBarHeight
             }
             
             if let tab = self.tabBarController {
@@ -512,7 +513,7 @@ extension UIViewController {
         get {
             
             if let me = self as? UINavigationController {
-                return me.visibleViewController.navigationBarHeight
+                return me.visibleViewController!.navigationBarHeight
             }
             
             if let nav = self.navigationController {
@@ -527,7 +528,7 @@ extension UIViewController {
         get {
             
             if let me = self as? UINavigationController {
-                return me.visibleViewController.navigationBarColor
+                return me.visibleViewController!.navigationBarColor
             }
             
             return navigationController?.navigationBar.tintColor
@@ -618,7 +619,7 @@ extension UILabel {
         get {
             return objc_getAssociatedObject(self, &UILabelAttributedStringArray) as? [NSAttributedString]
         } set (value) {
-            objc_setAssociatedObject(self, &UILabelAttributedStringArray, value, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+            objc_setAssociatedObject(self, &UILabelAttributedStringArray, value, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     
@@ -627,7 +628,7 @@ extension UILabel {
         text: String,
         color: UIColor,
         font: UIFont) {
-            var att = NSAttributedString (text: text, color: color, font: font)
+            let att = NSAttributedString (text: text, color: color, font: font)
             self.addAttributedString(att)
     }
     
@@ -668,8 +669,8 @@ extension UILabel {
         newText: String) {
             if let att = attributedStrings?[index] {
                 let newAtt = NSMutableAttributedString (string: newText)
-                
-                att.enumerateAttributesInRange(NSMakeRange(0, countElements(att.string)-1),
+              
+                att.enumerateAttributesInRange(NSMakeRange(0, att.string.characters.count-1),
                     options: NSAttributedStringEnumerationOptions.LongestEffectiveRangeNotRequired,
                     usingBlock: { (attribute, range, stop) -> Void in
                         for (key, value) in attribute {
@@ -907,10 +908,9 @@ extension NSAttributedString {
     
     func addAtt (attribute: [NSString: NSObject]) -> NSAttributedString {
         let mutable = NSMutableAttributedString (attributedString: self)
-        let count = countElements(string)
         
         for (key, value) in attribute {
-            mutable.addAttribute(key, value: value, range: NSMakeRange(0, count))
+            mutable.addAttribute(key as String, value: value, range: NSMakeRange(0, string.characters.count))
         }
         
         return mutable
@@ -929,7 +929,7 @@ extension NSAttributedString {
         style: NSAttributedStringStyle = .plain) {
             
             var atts = [NSFontAttributeName: font, NSForegroundColorAttributeName: color]
-            atts += style.attribute()
+            atts.unionInPlace(style.attribute() as! [String: NSObject])
             
             self.init (string: text, attributes: atts)
     }
@@ -942,7 +942,7 @@ extension NSAttributedString {
     
     
     class func withAttributedStrings (mutableString: (NSMutableAttributedString)->()) -> NSAttributedString {
-        var mutable = NSMutableAttributedString ()
+        let mutable = NSMutableAttributedString ()
         mutableString (mutable)
         return mutable
     }
@@ -954,7 +954,7 @@ extension NSAttributedString {
 
 extension String {
     subscript (i: Int) -> String {
-        return String(Array(self)[i])
+        return String(Array(self.characters)[i])
     }
 }
 
@@ -1002,7 +1002,7 @@ extension UIFont {
     class func PrintFontFamily (font: FontName) {
         let arr = UIFont.fontNamesForFamilyName(font.rawValue)
         for name in arr {
-            println(name)
+            print(name)
         }
     }
     
@@ -1072,16 +1072,16 @@ extension UIImageView {
 
     
     func imageWithUrl (url: String) {
-        imageRequest(url, { (image) -> Void in
+        imageRequest(url, success: { (image) -> Void in
             if let img = image {
                 self.image = image
             }
         })
     }
     
-    func imageWithUrl (url: String, placeholder: UIImage) {
+    func imageWithUrlAndImagePlaceholder (url: String, placeholder: UIImage) {
         self.image = placeholder
-        imageRequest(url, { (image) -> Void in
+        imageRequest(url, success: { (image) -> Void in
             if let img = image {
                 self.image = image
             }
@@ -1090,7 +1090,7 @@ extension UIImageView {
     
     func imageWithUrl (url: String, placeholder: String) {
         self.image = UIImage (named: placeholder)
-        imageRequest(url, { (image) -> Void in
+        imageRequest(url, success: { (image) -> Void in
             if let img = image {
                 self.image = image
             }
@@ -1143,9 +1143,9 @@ extension UIImage {
 extension UIColor {
     
     class func randomColor () -> UIColor {
-        var randomRed:CGFloat = CGFloat(drand48())
-        var randomGreen:CGFloat = CGFloat(drand48())
-        var randomBlue:CGFloat = CGFloat(drand48())
+        let randomRed:CGFloat = CGFloat(drand48())
+        let randomGreen:CGFloat = CGFloat(drand48())
+        let randomBlue:CGFloat = CGFloat(drand48())
         
         return UIColor(red: randomRed,
             green: randomGreen,
@@ -1209,7 +1209,7 @@ extension UIColor {
         var hexValue: CUnsignedLongLong = 0
         
         if scanner.scanHexLongLong(&hexValue) {
-            switch (countElements(hex)) {
+            switch (hex.characters.count) {
             case 3:
                 red   = CGFloat((hexValue & 0xF00) >> 8)       / 15.0
                 green = CGFloat((hexValue & 0x0F0) >> 4)       / 15.0
@@ -1229,10 +1229,10 @@ extension UIColor {
                 blue  = CGFloat((hexValue & 0x0000FF00) >> 8)  / 255.0
                 alpha = CGFloat(hexValue & 0x000000FF)         / 255.0
             default:
-                print("Invalid RGB string, number of characters after '#' should be either 3, 4, 6 or 8")
+                print("Invalid RGB string, number of characters after '#' should be either 3, 4, 6 or 8", appendNewline: false)
             }
         } else {
-            println("Scan hex error")
+            print("Scan hex error")
         }
         
         return UIColor (red: red, green:green, blue:blue, alpha:alpha)
@@ -1246,7 +1246,7 @@ extension UIColor {
 extension Array {
     mutating func removeObject<U: Equatable> (object: U) {
         var index: Int?
-        for (idx, objectToCompare) in enumerate(self) {
+        for (idx, objectToCompare) in self.enumerate() {
             if let to = objectToCompare as? U {
                 if object == to {
                     index = idx
@@ -1308,11 +1308,11 @@ func imageRequest (
     url: String,
     success: (UIImage?)->Void) {
     
-    urlRequest(url) {data in
+      urlRequest(url, success: { (data) -> Void in
         if let d = data {
-            success (UIImage (data: d))
+          success (UIImage (data: d))
         }
-    }
+      })
 }
 
 func jsonRequest (
@@ -1321,11 +1321,11 @@ func jsonRequest (
     error: ((NSError)->Void)?) {
     urlRequest(
         url,
-        { (data)->Void in
+        success: { (data)->Void in
             let json: AnyObject? = dataToJsonDict(data)
             success (json)
         },
-        { (err)->Void in
+        error: { (err)->Void in
             if let e = error {
                 e (err)
             }
@@ -1336,10 +1336,15 @@ func dataToJsonDict (data: NSData?) -> AnyObject? {
 
     if let d = data {
         var error: NSError?
-        let json: AnyObject? = NSJSONSerialization.JSONObjectWithData(
-            d,
-            options: NSJSONReadingOptions.AllowFragments,
-            error: &error)
+        let json: AnyObject?
+        do {
+            json = try NSJSONSerialization.JSONObjectWithData(
+                        d,
+                        options: NSJSONReadingOptions.AllowFragments)
+        } catch let error1 as NSError {
+            error = error1
+            json = nil
+        }
         
         if let e = error {
             return nil
@@ -1477,6 +1482,7 @@ func clamp (
 
 // MARK: - UIAlertController
 
+@available(iOS 8.0, *)
 func alert (
     title: String,
     message: String,
@@ -1494,6 +1500,7 @@ func alert (
         return a
 }
 
+@available(iOS 8.0, *)
 func actionSheet (
     title: String,
     message: String,
@@ -1525,7 +1532,7 @@ func barButtonItem (
 func barButtonItem (
     imageName: String,
     action: (AnyObject)->()) -> UIBarButtonItem {
-        return barButtonItem(imageName, 20, action)
+        return barButtonItem(imageName, size: 20, action: action)
 }
 
 func barButtonItem (
@@ -1558,7 +1565,7 @@ class BlockButton: UIButton {
         super.init(frame: frame)
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
@@ -1581,7 +1588,7 @@ class BlockWebView: UIWebView, UIWebViewDelegate {
     
     var didStartLoad: ((NSURLRequest) -> ())?
     var didFinishLoad: ((NSURLRequest) -> ())?
-    var didFailLoad: ((NSURLRequest, NSError) -> ())?
+    var didFailLoad: ((NSURLRequest, NSError?) -> ())?
     
     var shouldStartLoadingRequest: ((NSURLRequest) -> (Bool))?
     
@@ -1590,7 +1597,7 @@ class BlockWebView: UIWebView, UIWebViewDelegate {
         delegate = self
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
@@ -1605,7 +1612,7 @@ class BlockWebView: UIWebView, UIWebViewDelegate {
     
     func webView(
         webView: UIWebView,
-        didFailLoadWithError error: NSError) {
+        didFailLoadWithError error: NSError?) {
             didFailLoad? (webView.request!, error)
     }
     
@@ -1629,21 +1636,21 @@ class BlockTap: UITapGestureRecognizer {
     
     private var tapAction: ((UITapGestureRecognizer)->())?
     
-    override init(target: AnyObject, action: Selector) {
+    override init(target: AnyObject?, action: Selector) {
         super.init(target: target, action: action)
     }
     
-    init (
-        tapCount: Int,
-        fingerCount: Int,
-        action: ((UITapGestureRecognizer)->())?) {
-            super.init()
-            numberOfTapsRequired = tapCount
-            numberOfTouchesRequired = fingerCount
-            tapAction = action
-            addTarget(self, action: "didTap:")
-    }
-    
+//    init (
+//        tapCount: Int,
+//        fingerCount: Int,
+//        action: ((UITapGestureRecognizer)->())?) {
+//            super.init()
+//            numberOfTapsRequired = tapCount
+//            numberOfTouchesRequired = fingerCount
+//            tapAction = action
+//            addTarget(self, action: "didTap:")
+//    }
+  
     func didTap (tap: UITapGestureRecognizer) {
         tapAction? (tap)
     }
@@ -1657,16 +1664,16 @@ class BlockPan: UIPanGestureRecognizer {
     
     private var panAction: ((UIPanGestureRecognizer)->())?
     
-    override init(target: AnyObject, action: Selector) {
+    override init(target: AnyObject?, action: Selector) {
         super.init(target: target, action: action)
     }
     
-    init (action: ((UIPanGestureRecognizer)->())?) {
-        super.init()
-        panAction = action
-        addTarget(self, action: "didPan:")
-    }
-    
+//    init (action: ((UIPanGestureRecognizer)->())?) {
+//        super.init()
+//        panAction = action
+//        addTarget(self, action: "didPan:")
+//    }
+  
     func didPan (pan: UIPanGestureRecognizer) {
         panAction? (pan)
     }
@@ -1680,20 +1687,20 @@ class BlockSwipe: UISwipeGestureRecognizer {
     
     private var swipeAction: ((UISwipeGestureRecognizer)->())?
     
-    override init(target: AnyObject, action: Selector) {
+    override init(target: AnyObject?, action: Selector) {
         super.init(target: target, action: action)
     }
     
-    init (direction: UISwipeGestureRecognizerDirection,
-        fingerCount: Int,
-        action: ((UISwipeGestureRecognizer)->())?) {
-            super.init()
-            self.direction = direction
-            numberOfTouchesRequired = fingerCount
-            swipeAction = action
-            addTarget(self, action: "didSwipe:")
-    }
-    
+//    init (direction: UISwipeGestureRecognizerDirection,
+//        fingerCount: Int,
+//        action: ((UISwipeGestureRecognizer)->())?) {
+//            super.init()
+//            self.direction = direction
+//            numberOfTouchesRequired = fingerCount
+//            swipeAction = action
+//            addTarget(self, action: "didSwipe:")
+//    }
+  
     func didSwipe (swipe: UISwipeGestureRecognizer) {
         swipeAction? (swipe)
     }
@@ -1707,16 +1714,16 @@ class BlockPinch: UIPinchGestureRecognizer {
     
     private var pinchAction: ((UIPinchGestureRecognizer)->())?
     
-    override init(target: AnyObject, action: Selector) {
+    override init(target: AnyObject?, action: Selector) {
         super.init(target: target, action: action)
     }
     
-    init (action: ((UIPinchGestureRecognizer)->())?) {
-        super.init()
-        pinchAction = action
-        addTarget(self, action: "didPinch:")
-    }
-    
+//    init (action: ((UIPinchGestureRecognizer)->())?) {
+//        super.init()
+//        pinchAction = action
+//        addTarget(self, action: "didPinch:")
+//    }
+  
     func didPinch (pinch: UIPinchGestureRecognizer) {
         pinchAction? (pinch)
     }
@@ -1730,16 +1737,16 @@ class BlockLongPress: UILongPressGestureRecognizer {
     
     private var longPressAction: ((UILongPressGestureRecognizer)->())?
     
-    override init(target: AnyObject, action: Selector) {
+    override init(target: AnyObject?, action: Selector) {
         super.init(target: target, action: action)
     }
     
-    init (action: ((UILongPressGestureRecognizer)->())?) {
-        super.init()
-        longPressAction = action
-        addTarget(self, action: "didLongPressed:")
-    }
-    
+//    init (action: ((UILongPressGestureRecognizer)->())?) {
+//        super.init()
+//        longPressAction = action
+//        addTarget(self, action: "didLongPressed:")
+//    }
+  
     func didLongPressed (longPress: UILongPressGestureRecognizer) {
         longPressAction? (longPress)
     }
@@ -1772,7 +1779,7 @@ class BlockBadge: UILabel {
         setCornerRadius(h/2)
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 }
@@ -1786,16 +1793,16 @@ class BlockPicker: UIPickerView, UIPickerViewDataSource, UIPickerViewDelegate {
     var items: [String]?
     var didPick: ((Int)->Void)?
     
-    init (title: String, items: [String], didPick: (index: Int) -> Void) {
-        super.init()
-        self.items = items
-        self.didPick = didPick
-        
-        self.delegate = self
-        self.dataSource = self
-    }
-    
-    required init(coder aDecoder: NSCoder) {
+//    init (title: String, items: [String], didPick: (index: Int) -> Void) {
+//        super.init()
+//        self.items = items
+//        self.didPick = didPick
+//        
+//        self.delegate = self
+//        self.dataSource = self
+//    }
+  
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
@@ -1833,7 +1840,7 @@ class DequeuableScrollView: UIScrollView {
         super.init(frame: frame)
     }
     
-    required init (coder aDecoder: NSCoder) {
+    required init? (coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
